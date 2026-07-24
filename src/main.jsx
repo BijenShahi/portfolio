@@ -76,6 +76,7 @@ const label = 'font-mono text-[0.68rem] tracking-[0.12em] text-[#6a665f] upperca
 const focusRing = 'focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85d41]';
 const gmailComposeUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=shahibijen%40gmail.com';
 const navAction = `group inline-flex items-center gap-1.5 font-mono text-[0.68rem] tracking-[0.08em] uppercase text-[#56534d] transition-colors duration-300 hover:text-[#d85d41] ${focusRing}`;
+const secretTapWindowMs = 30000;
 
 function ArrowUpRight({ className = 'text-[1.1rem]' }) {
   return <span aria-hidden="true" className={`inline-block leading-none ${className}`}>↗</span>;
@@ -872,7 +873,7 @@ function App() {
     }
 
     const now = Date.now();
-    if (now - logoTapRef.current.lastTap > 12000) {
+    if (now - logoTapRef.current.lastTap > secretTapWindowMs) {
       logoTapRef.current.count = 0;
     }
 
@@ -893,7 +894,7 @@ function App() {
     logoResetTimerRef.current = window.setTimeout(() => {
       logoTapRef.current.count = 0;
       setLogoTapCount(0);
-    }, 12000);
+    }, secretTapWindowMs);
   };
 
   const closeGame = () => {
