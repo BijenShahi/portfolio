@@ -226,15 +226,8 @@ function App() {
             </Reveal>
           </div>
 
-          <Reveal className="relative z-10 flex items-center justify-between gap-4 border-t border-[#bcb9b1] pt-5 font-mono text-[0.62rem] tracking-[0.08em] uppercase sm:text-[0.68rem]" delay={240}>
-            <p className="m-0 max-w-[190px] leading-[1.5] sm:max-w-none">React Native · Kotlin · Product delivery</p>
-            <span className="inline-flex items-center gap-2 text-right text-[#56534d]">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#d85d41] opacity-60 motion-reduce:hidden" />
-                <span className="relative inline-flex size-2 rounded-full bg-[#d85d41]" />
-              </span>
-              Open to impactful opportunities
-            </span>
+          <Reveal className="relative z-10 border-t border-[#bcb9b1] pt-5 font-mono text-[0.62rem] tracking-[0.08em] uppercase sm:text-[0.68rem]" delay={240}>
+            <p className="m-0 leading-[1.5]">React Native · Kotlin</p>
           </Reveal>
         </section>
 
