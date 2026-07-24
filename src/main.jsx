@@ -162,7 +162,457 @@ function ScrollProgress() {
   );
 }
 
+const questStations = [
+  { id: 'profile', name: 'Origin Camp', marker: 'ID', x: 1, y: 1, color: '#ffb563' },
+  { id: 'experience', name: 'Career Tower', marker: 'XP', x: 7, y: 1, color: '#e8785d' },
+  { id: 'education', name: 'Academy', marker: 'ED', x: 4, y: 2, color: '#9a8bff' },
+  { id: 'expertise', name: 'Tool Lab', marker: 'SK', x: 1, y: 5, color: '#4fc4a1' },
+  { id: 'contact', name: 'Signal Port', marker: '@', x: 7, y: 5, color: '#67a8ff' },
+];
+
+const codeShards = [
+  { id: 'logic', x: 3, y: 4, color: '#ffe36e' },
+  { id: 'craft', x: 5, y: 3, color: '#ff8b73' },
+  { id: 'curiosity', x: 6, y: 6, color: '#83e5ff' },
+];
+
+const scenery = [
+  { x: 0, y: 0 }, { x: 2, y: 0 }, { x: 6, y: 0 }, { x: 8, y: 0 },
+  { x: 0, y: 2 }, { x: 8, y: 2 }, { x: 2, y: 3 }, { x: 7, y: 3 },
+  { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 8, y: 6 },
+];
+
+function ByteCompanion() {
+  return (
+    <div className="relative size-9 shrink-0" aria-label="Byte, your code companion" role="img">
+      <span className="absolute top-1 left-2 size-6 rotate-45 rounded-[7px] border-[3px] border-[#292d3e] bg-[#ffe36e] shadow-[3px_3px_0_#292d3e]" />
+      <span className="absolute top-3.5 left-3.5 size-1 rounded-full bg-[#292d3e]" />
+      <span className="absolute top-3.5 right-2.5 size-1 rounded-full bg-[#292d3e]" />
+      <span className="absolute bottom-0 left-1/2 h-2 w-1 -translate-x-1/2 bg-[#292d3e]" />
+    </div>
+  );
+}
+
+function PlayerSprite() {
+  return (
+    <div className="relative size-9 drop-shadow-[3px_4px_0_rgba(20,29,37,.28)]" aria-label="Bijen" role="img">
+      <span className="absolute top-0 left-1/2 h-2.5 w-7 -translate-x-1/2 rounded-t-sm border-2 border-[#292d3e] bg-[#e8785d]" />
+      <span className="absolute top-2 left-1/2 h-3.5 w-5 -translate-x-1/2 border-x-2 border-[#292d3e] bg-[#f5c6a5]" />
+      <span className="absolute top-[9px] left-[11px] size-1 bg-[#292d3e]" />
+      <span className="absolute top-[9px] right-[10px] size-1 bg-[#292d3e]" />
+      <span className="absolute bottom-1 left-1/2 h-4 w-6 -translate-x-1/2 rounded-sm border-2 border-[#292d3e] bg-[#405574]" />
+      <span className="absolute bottom-0 left-2 h-2 w-2 bg-[#292d3e]" />
+      <span className="absolute right-2 bottom-0 h-2 w-2 bg-[#292d3e]" />
+    </div>
+  );
+}
+
+function DirectionPad({ onMove }) {
+  const buttonClass = 'grid size-11 place-items-center rounded-lg border-2 border-[#292d3e] bg-[#f7f0d5] font-mono text-lg font-black text-[#292d3e] shadow-[3px_3px_0_#292d3e] transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none';
+
+  return (
+    <div className="grid w-fit grid-cols-3 gap-1" aria-label="Movement controls">
+      <span />
+      <button className={buttonClass} onClick={() => onMove(0, -1)} aria-label="Move up" type="button">↑</button>
+      <span />
+      <button className={buttonClass} onClick={() => onMove(-1, 0)} aria-label="Move left" type="button">←</button>
+      <button className={buttonClass} onClick={() => onMove(0, 1)} aria-label="Move down" type="button">↓</button>
+      <button className={buttonClass} onClick={() => onMove(1, 0)} aria-label="Move right" type="button">→</button>
+    </div>
+  );
+}
+
+function QuestScene({ scene, onContinue, collectedCount }) {
+  const panelButton = 'rounded-lg border-2 border-[#292d3e] bg-[#ffe36e] px-4 py-3 font-mono text-[0.7rem] font-black tracking-[0.08em] text-[#292d3e] uppercase shadow-[3px_3px_0_#292d3e] transition-transform hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none';
+
+  if (scene === 'welcome') {
+    return (
+      <>
+        <span className="mb-3 block font-mono text-[0.64rem] font-bold tracking-[0.16em] text-[#e8785d] uppercase">Secret route discovered</span>
+        <h2 className="mb-3 text-3xl leading-none font-black tracking-[-0.04em]">Bijen’s<br />Debugger Trail</h2>
+        <p className="mb-4 text-sm leading-6 text-[#50566d]">
+          Welcome, explorer. Guide Bijen through five portfolio districts, meet Byte the code companion, and collect all three code shards.
+        </p>
+        <div className="mb-5 rounded-lg border-2 border-dashed border-[#9ca3af] bg-white/50 p-3 font-mono text-[0.68rem] leading-5 text-[#50566d]">
+          Move with WASD, arrow keys, or the control pad. Enter a building to inspect that chapter.
+        </div>
+        <button className={panelButton} onClick={onContinue} type="button">Begin quest →</button>
+      </>
+    );
+  }
+
+  if (scene === 'profile') {
+    return (
+      <>
+        <span className="mb-3 block font-mono text-[0.64rem] font-bold tracking-[0.16em] text-[#e8785d] uppercase">01 / Origin Camp</span>
+        <h2 className="mb-3 text-2xl font-black tracking-[-0.04em]">The product-minded engineer</h2>
+        <p className="mb-4 text-sm leading-6 text-[#50566d]">
+          Bijen Shahi is a software engineer with more than four years of experience building consumer mobile products across entertainment and digital media.
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          {['Native migrations', 'Product craft', 'Store releases', 'Mentoring'].map((item) => (
+            <span className="rounded-md border-2 border-[#292d3e]/20 bg-white/60 p-2 font-mono text-[0.63rem] font-bold" key={item}>{item}</span>
+          ))}
+        </div>
+        <button className={`${panelButton} mt-5`} onClick={onContinue} type="button">Keep exploring</button>
+      </>
+    );
+  }
+
+  if (scene === 'experience') {
+    return (
+      <>
+        <span className="mb-3 block font-mono text-[0.64rem] font-bold tracking-[0.16em] text-[#e8785d] uppercase">02 / Career Tower</span>
+        <h2 className="mb-4 text-2xl font-black tracking-[-0.04em]">Four career levels cleared</h2>
+        <div className="max-h-[42vh] space-y-3 overflow-y-auto pr-1">
+          {experience.map((item, index) => (
+            <article className="rounded-lg border-2 border-[#292d3e]/20 bg-white/55 p-3" key={`${item.company}-quest`}>
+              <div className="mb-1 flex items-start gap-2">
+                <span className="font-mono text-[0.62rem] font-black text-[#e8785d]">LV.{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3 className="text-sm font-black leading-tight">{item.company}</h3>
+                  <p className="m-0 text-[0.72rem] font-bold text-[#596076]">{item.role}</p>
+                </div>
+              </div>
+              <p className="mt-2 mb-0 text-[0.72rem] leading-5 text-[#596076]">{item.summary}</p>
+            </article>
+          ))}
+        </div>
+        <button className={`${panelButton} mt-5`} onClick={onContinue} type="button">Return to map</button>
+      </>
+    );
+  }
+
+  if (scene === 'expertise') {
+    return (
+      <>
+        <span className="mb-3 block font-mono text-[0.64rem] font-bold tracking-[0.16em] text-[#e8785d] uppercase">03 / Tool Lab</span>
+        <h2 className="mb-4 text-2xl font-black tracking-[-0.04em]">Engineering inventory</h2>
+        <div className="space-y-3">
+          {expertise.map((group) => (
+            <div key={`${group.title}-quest`}>
+              <p className="mb-1 font-mono text-[0.62rem] font-black tracking-[0.08em] uppercase">{group.title}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {group.skills.map((skill) => (
+                  <span className="rounded border border-[#292d3e]/30 bg-white/60 px-2 py-1 font-mono text-[0.62rem]" key={`${skill}-quest`}>{skill}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <button className={`${panelButton} mt-5`} onClick={onContinue} type="button">Pack tools</button>
+      </>
+    );
+  }
+
+  if (scene === 'education') {
+    return (
+      <>
+        <span className="mb-3 block font-mono text-[0.64rem] font-bold tracking-[0.16em] text-[#e8785d] uppercase">04 / Academy</span>
+        <h2 className="mb-5 text-2xl font-black tracking-[-0.04em]">Knowledge unlocked</h2>
+        <div className="space-y-3">
+          <article className="rounded-lg border-2 border-[#292d3e] bg-white/60 p-4 shadow-[3px_3px_0_#292d3e]">
+            <span className="font-mono text-[0.62rem] font-black text-[#7c6be8]">2018 — 2021</span>
+            <h3 className="mt-1 mb-1 text-base font-black">BSc (Hons) Computer Science</h3>
+            <p className="m-0 text-[0.75rem] leading-5 text-[#596076]">University of Wolverhampton, delivered at Herald College Kathmandu</p>
+          </article>
+          <article className="rounded-lg border-2 border-[#292d3e]/20 bg-white/55 p-4">
+            <span className="font-mono text-[0.62rem] font-black text-[#7c6be8]">2016 — 2018</span>
+            <h3 className="mt-1 mb-1 text-base font-black">+2 Management</h3>
+            <p className="m-0 text-[0.75rem] text-[#596076]">Uniglobe Secondary School, Nepal</p>
+          </article>
+        </div>
+        <button className={`${panelButton} mt-5`} onClick={onContinue} type="button">Leave academy</button>
+      </>
+    );
+  }
+
+  if (scene === 'contact') {
+    return (
+      <>
+        <span className="mb-3 block font-mono text-[0.64rem] font-bold tracking-[0.16em] text-[#e8785d] uppercase">05 / Signal Port</span>
+        <h2 className="mb-3 text-2xl font-black tracking-[-0.04em]">Open a communication channel</h2>
+        <p className="mb-5 text-sm leading-6 text-[#50566d]">Found an interesting quest for Bijen? Send a message or take the classic résumé route.</p>
+        <div className="flex flex-col gap-3">
+          <a className={panelButton} href={gmailComposeUrl} target="_blank" rel="noreferrer">Send a message ↗</a>
+          <a className="rounded-lg border-2 border-[#292d3e] bg-white/60 px-4 py-3 text-center font-mono text-[0.7rem] font-black tracking-[0.08em] uppercase" href="/Bijen-Shahi-CV.pdf" download>Download CV ↓</a>
+        </div>
+        <button className="mt-5 font-mono text-[0.68rem] font-black underline decoration-2 underline-offset-4" onClick={onContinue} type="button">Return to map</button>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="mb-4 flex items-center gap-3">
+        <ByteCompanion />
+        <div>
+          <span className="block font-mono text-[0.62rem] font-black tracking-[0.1em] text-[#e8785d] uppercase">Quest guide</span>
+          <h2 className="text-xl font-black">Byte says hello!</h2>
+        </div>
+      </div>
+      <p className="mb-4 text-sm leading-6 text-[#50566d]">Walk into a marked building to open a portfolio chapter. The glowing diamonds are code shards—collect all three for a perfect run.</p>
+      <div className="rounded-lg border-2 border-[#292d3e]/20 bg-white/55 p-4">
+        <div className="mb-2 flex items-center justify-between font-mono text-[0.65rem] font-black uppercase">
+          <span>Code shards</span>
+          <span>{collectedCount} / 3</span>
+        </div>
+        <div className="flex gap-2">
+          {codeShards.map((shard, index) => (
+            <span
+              className={`size-5 rotate-45 border-2 border-[#292d3e] transition-all ${index < collectedCount ? 'scale-100 opacity-100' : 'scale-75 bg-transparent opacity-25'}`}
+              style={index < collectedCount ? { backgroundColor: shard.color } : undefined}
+              key={shard.id}
+            />
+          ))}
+        </div>
+      </div>
+      {collectedCount === codeShards.length && (
+        <div className="mt-4 animate-bounce rounded-lg border-2 border-[#292d3e] bg-[#ffe36e] p-3 text-center font-mono text-[0.68rem] font-black uppercase motion-reduce:animate-none">
+          Master Builder badge unlocked!
+        </div>
+      )}
+    </>
+  );
+}
+
+function PortfolioQuest({ onClose }) {
+  const [player, setPlayer] = useState({ x: 4, y: 6 });
+  const [scene, setScene] = useState('welcome');
+  const [collected, setCollected] = useState([]);
+  const playerRef = useRef({ x: 4, y: 6 });
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  const move = (deltaX, deltaY) => {
+    if (scene) return;
+
+    const next = {
+      x: Math.min(Math.max(playerRef.current.x + deltaX, 0), 8),
+      y: Math.min(Math.max(playerRef.current.y + deltaY, 0), 6),
+    };
+    const station = questStations.find((item) => item.x === next.x && item.y === next.y);
+    const shard = codeShards.find((item) => item.x === next.x && item.y === next.y);
+
+    playerRef.current = next;
+    setPlayer(next);
+    if (station) setScene(station.id);
+    if (shard) {
+      setCollected((currentShards) => (
+        currentShards.includes(shard.id) ? currentShards : [...currentShards, shard.id]
+      ));
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        if (scene) setScene(null);
+        else onClose();
+        return;
+      }
+
+      if (scene) return;
+      const direction = {
+        ArrowUp: [0, -1],
+        w: [0, -1],
+        ArrowDown: [0, 1],
+        s: [0, 1],
+        ArrowLeft: [-1, 0],
+        a: [-1, 0],
+        ArrowRight: [1, 0],
+        d: [1, 0],
+      }[event.key];
+
+      if (direction) {
+        event.preventDefault();
+        move(...direction);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [scene, onClose]);
+
+  return (
+    <section
+      className="fixed inset-0 z-[100] overflow-y-auto bg-[#253649] font-sans text-[#292d3e]"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Bijen's interactive portfolio quest"
+    >
+      <div className="min-h-full bg-[linear-gradient(135deg,rgba(255,255,255,.03)_25%,transparent_25%,transparent_50%,rgba(255,255,255,.03)_50%,rgba(255,255,255,.03)_75%,transparent_75%)] bg-[length:32px_32px] p-3 sm:p-5">
+        <div className="mx-auto max-w-[1400px]">
+          <header className="mb-3 flex items-center justify-between rounded-xl border-[3px] border-[#292d3e] bg-[#f7f0d5] px-3 py-3 shadow-[5px_5px_0_#111927] sm:px-5">
+            <div className="flex items-center gap-3">
+              <ByteCompanion />
+              <div>
+                <span className="block font-mono text-[0.58rem] font-black tracking-[0.15em] text-[#e8785d] uppercase">Secret portfolio mode</span>
+                <h1 className="text-base font-black tracking-[-0.03em] sm:text-xl">The Debugger Trail</h1>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="hidden font-mono text-[0.62rem] font-bold text-[#596076] sm:block">ESC TO EXIT</span>
+              <button
+                className="rounded-lg border-2 border-[#292d3e] bg-[#e8785d] px-3 py-2 font-mono text-[0.65rem] font-black uppercase shadow-[3px_3px_0_#292d3e] transition-transform hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                onClick={onClose}
+                type="button"
+              >
+                Exit game
+              </button>
+            </div>
+          </header>
+
+          <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="overflow-hidden rounded-xl border-[3px] border-[#292d3e] bg-[#97d777] shadow-[6px_6px_0_#111927]">
+              <div className="flex items-center justify-between border-b-[3px] border-[#292d3e] bg-[#dff0b6] px-4 py-3 font-mono text-[0.62rem] font-black tracking-[0.1em] uppercase">
+                <span>Verdant Circuit / Zone 04</span>
+                <span>{collected.length}/3 shards</span>
+              </div>
+
+              <div className="relative h-[56svh] min-h-[380px] max-h-[680px]">
+                <div className="absolute inset-0 grid grid-cols-9 grid-rows-7">
+                  {Array.from({ length: 63 }, (_, index) => {
+                    const x = index % 9;
+                    const y = Math.floor(index / 9);
+                    const isPath = x === 4 || y === 3 || (y === 5 && x > 0 && x < 8);
+                    return (
+                      <span
+                        className={`border border-[#608f5c]/15 ${isPath ? 'bg-[#e8d79c]/80' : (x + y) % 2 === 0 ? 'bg-[#9dd97d]' : 'bg-[#94d174]'}`}
+                        key={`tile-${index}`}
+                      />
+                    );
+                  })}
+                </div>
+
+                <div className="absolute inset-0 grid grid-cols-9 grid-rows-7">
+                  {scenery.map((item, index) => (
+                    <span
+                      className="grid place-items-center text-2xl text-[#35734e] drop-shadow-[2px_2px_0_#254c38]"
+                      style={{ gridColumn: item.x + 1, gridRow: item.y + 1 }}
+                      aria-hidden="true"
+                      key={`tree-${index}`}
+                    >
+                      ▲
+                    </span>
+                  ))}
+
+                  {questStations.map((station) => (
+                    <button
+                      className="group relative z-10 grid place-items-center self-center justify-self-center"
+                      style={{ gridColumn: station.x + 1, gridRow: station.y + 1 }}
+                      onClick={() => setScene(station.id)}
+                      aria-label={`Enter ${station.name}`}
+                      type="button"
+                      key={station.id}
+                    >
+                      <span
+                        className="grid size-10 place-items-center rounded-t-lg border-[3px] border-[#292d3e] font-mono text-[0.7rem] font-black shadow-[3px_3px_0_#292d3e] transition-transform group-hover:-translate-y-1 sm:size-12"
+                        style={{ backgroundColor: station.color }}
+                      >
+                        {station.marker}
+                      </span>
+                      <span className="mt-1 rounded bg-[#f7f0d5] px-1.5 py-0.5 font-mono text-[0.48rem] font-black whitespace-nowrap uppercase shadow-[1px_1px_0_#292d3e] sm:text-[0.55rem]">{station.name}</span>
+                    </button>
+                  ))}
+
+                  {codeShards.filter((shard) => !collected.includes(shard.id)).map((shard) => (
+                    <span
+                      className="z-10 size-4 animate-pulse self-center justify-self-center rotate-45 border-2 border-[#292d3e] shadow-[2px_2px_0_rgba(41,45,62,.5)] motion-reduce:animate-none"
+                      style={{ gridColumn: shard.x + 1, gridRow: shard.y + 1, backgroundColor: shard.color }}
+                      aria-label={`${shard.id} code shard`}
+                      role="img"
+                      key={shard.id}
+                    />
+                  ))}
+
+                  <div
+                    className="z-20 grid place-items-center transition-all duration-150 ease-out"
+                    style={{ gridColumn: player.x + 1, gridRow: player.y + 1 }}
+                  >
+                    <PlayerSprite />
+                  </div>
+                </div>
+
+                <div className="absolute right-3 bottom-3 z-20 lg:hidden">
+                  <DirectionPad onMove={move} />
+                </div>
+              </div>
+            </div>
+
+            <aside className={`${scene ? 'fixed inset-x-3 bottom-3 z-30 max-h-[72svh] overflow-y-auto lg:static lg:max-h-none' : 'hidden lg:block'} rounded-xl border-[3px] border-[#292d3e] bg-[#f7f0d5] p-5 shadow-[6px_6px_0_#111927]`}>
+              <QuestScene scene={scene} onContinue={() => setScene(null)} collectedCount={collected.length} />
+            </aside>
+          </div>
+
+          <div className="mt-4 hidden items-center justify-between rounded-xl border-[3px] border-[#292d3e] bg-[#f7f0d5] p-4 shadow-[5px_5px_0_#111927] lg:flex">
+            <div className="flex items-center gap-4">
+              <PlayerSprite />
+              <div>
+                <span className="block font-mono text-[0.6rem] font-black tracking-[0.1em] text-[#e8785d] uppercase">Player</span>
+                <strong className="text-sm">BIJEN / MOBILE ENGINEER / LV.04</strong>
+              </div>
+            </div>
+            <DirectionPad onMove={move} />
+            <p className="m-0 max-w-[260px] text-right font-mono text-[0.62rem] leading-5 text-[#596076]">WASD / ARROWS TO MOVE<br />WALK INTO A BUILDING TO ENTER</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function App() {
+  const [gameOpen, setGameOpen] = useState(false);
+  const logoRef = useRef(null);
+  const logoTapRef = useRef({ count: 0, lastTap: 0 });
+
+  useEffect(() => {
+    const sequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let position = 0;
+
+    const handleSecretKeys = (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      if (key === sequence[position]) {
+        position += 1;
+        if (position === sequence.length) {
+          setGameOpen(true);
+          position = 0;
+        }
+      } else {
+        position = key === sequence[0] ? 1 : 0;
+      }
+    };
+
+    window.addEventListener('keydown', handleSecretKeys);
+    return () => window.removeEventListener('keydown', handleSecretKeys);
+  }, []);
+
+  const handleLogoTap = () => {
+    const now = Date.now();
+    if (now - logoTapRef.current.lastTap > 1800) {
+      logoTapRef.current.count = 0;
+    }
+    logoTapRef.current.lastTap = now;
+    logoTapRef.current.count += 1;
+
+    if (logoTapRef.current.count >= 5) {
+      logoTapRef.current.count = 0;
+      setGameOpen(true);
+    }
+  };
+
+  const closeGame = () => {
+    setGameOpen(false);
+    window.setTimeout(() => logoRef.current?.focus(), 0);
+  };
+
   return (
     <main className="overflow-x-hidden bg-[#f2f0ea] text-[#151518] antialiased selection:bg-[#d85d41] selection:text-white">
       <ScrollProgress />
@@ -175,7 +625,7 @@ function App() {
 
       <header className="sticky top-0 z-50 border-b border-transparent bg-[#f2f0ea]/88 backdrop-blur-xl">
         <nav className={`${shell} flex h-[74px] items-center justify-between text-[0.84rem] font-medium sm:h-[88px]`} aria-label="Primary navigation">
-          <a className={`font-mono text-[1.4rem] tracking-[-0.12em] ${focusRing}`} href="#top" aria-label="Bijen Shahi, home">
+          <a ref={logoRef} className={`font-mono text-[1.4rem] tracking-[-0.12em] ${focusRing}`} href="#top" aria-label="Bijen Shahi, home" onClick={handleLogoTap}>
             BS<span className="text-[#d85d41]">.</span>
           </a>
           <div className="hidden items-center gap-8 md:flex">
@@ -392,6 +842,7 @@ function App() {
           </div>
         </section>
       </div>
+      {gameOpen && <PortfolioQuest onClose={closeGame} />}
     </main>
   );
 }
