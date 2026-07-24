@@ -835,8 +835,10 @@ function PortfolioQuest({ onClose }) {
 
 function App() {
   const [gameOpen, setGameOpen] = useState(false);
+  const [logoTapCount, setLogoTapCount] = useState(0);
   const logoRef = useRef(null);
   const logoTapRef = useRef({ count: 0, lastTap: 0 });
+  const logoResetTimerRef = useRef(null);
 
   useEffect(() => {
     const sequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -856,21 +858,42 @@ function App() {
     };
 
     window.addEventListener('keydown', handleSecretKeys);
-    return () => window.removeEventListener('keydown', handleSecretKeys);
+    return () => {
+      window.removeEventListener('keydown', handleSecretKeys);
+      window.clearTimeout(logoResetTimerRef.current);
+    };
   }, []);
 
-  const handleLogoTap = () => {
+  const handleLogoTap = (event) => {
+    event.preventDefault();
+
+    if (window.scrollY > 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     const now = Date.now();
-    if (now - logoTapRef.current.lastTap > 1800) {
+    if (now - logoTapRef.current.lastTap > 12000) {
       logoTapRef.current.count = 0;
     }
+
     logoTapRef.current.lastTap = now;
     logoTapRef.current.count += 1;
+    const nextCount = logoTapRef.current.count;
 
-    if (logoTapRef.current.count >= 5) {
+    window.clearTimeout(logoResetTimerRef.current);
+
+    if (nextCount >= 5) {
       logoTapRef.current.count = 0;
+      setLogoTapCount(0);
       setGameOpen(true);
+      return;
     }
+
+    setLogoTapCount(nextCount);
+    logoResetTimerRef.current = window.setTimeout(() => {
+      logoTapRef.current.count = 0;
+      setLogoTapCount(0);
+    }, 12000);
   };
 
   const closeGame = () => {
@@ -890,9 +913,26 @@ function App() {
 
       <header className="sticky top-0 z-50 border-b border-transparent bg-[#f2f0ea]/88 backdrop-blur-xl">
         <nav className={`${shell} flex h-[74px] items-center justify-between text-[0.84rem] font-medium sm:h-[88px]`} aria-label="Primary navigation">
-          <a ref={logoRef} className={`font-mono text-[1.4rem] tracking-[-0.12em] ${focusRing}`} href="#top" aria-label="Bijen Shahi, home" onClick={handleLogoTap}>
-            BS<span className="text-[#d85d41]">.</span>
-          </a>
+          <div className="relative">
+            <a
+              ref={logoRef}
+              className={`-m-3 inline-flex min-h-11 min-w-11 touch-manipulation select-none items-center px-3 font-mono text-[1.4rem] tracking-[-0.12em] ${focusRing}`}
+              data-testid="secret-logo-trigger"
+              href="#top"
+              aria-label="Bijen Shahi, home"
+              onClick={handleLogoTap}
+            >
+              BS<span className="text-[#d85d41]">.</span>
+            </a>
+            {logoTapCount > 0 && (
+              <div
+                className="absolute top-full left-0 mt-3 w-max animate-pulse rounded-full bg-[#151518] px-3 py-1.5 font-mono text-[0.58rem] tracking-[0.08em] whitespace-nowrap text-[#f2f0ea] uppercase shadow-lg motion-reduce:animate-none"
+                aria-live="polite"
+              >
+                Keep tapping · {logoTapCount}/5
+              </div>
+            )}
+          </div>
           <div className="hidden items-center gap-8 md:flex">
             <a className={`transition-colors duration-300 hover:text-[#d85d41] ${focusRing}`} href="#work">Experience</a>
             <a className={`transition-colors duration-300 hover:text-[#d85d41] ${focusRing}`} href="#about">About</a>
