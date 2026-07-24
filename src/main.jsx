@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useRef, useState } from 'react';
+import { StrictMode, useCallback, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 
@@ -566,20 +566,34 @@ function PortfolioQuest({ onClose }) {
   const [capsules, setCapsules] = useState(6);
   const [captureStatus, setCaptureStatus] = useState('idle');
   const [scanned, setScanned] = useState(false);
+  const gameRef = useRef(null);
   const playerRef = useRef({ x: 4, y: 6 });
   const captureTimerRef = useRef(null);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    const focusFrame = window.requestAnimationFrame(() => {
+      gameRef.current?.focus({ preventScroll: true });
+    });
+
     return () => {
       document.body.style.overflow = previousOverflow;
+      window.cancelAnimationFrame(focusFrame);
       window.clearTimeout(captureTimerRef.current);
     };
   }, []);
 
-  const move = (deltaX, deltaY) => {
-    if (scene || encounter) return;
+  useEffect(() => {
+    if (!scene && !encounter) {
+      gameRef.current?.focus({ preventScroll: true });
+    }
+  }, [scene, encounter]);
+
+  const move = useCallback((deltaX, deltaY) => {
+    const welcomeIsOpen = scene === 'welcome';
+    if ((scene && !welcomeIsOpen) || encounter) return;
+    if (welcomeIsOpen) setScene(null);
 
     const next = {
       x: Math.min(Math.max(playerRef.current.x + deltaX, 0), 8),
@@ -604,7 +618,7 @@ function PortfolioQuest({ onClose }) {
         currentShards.includes(shard.id) ? currentShards : [...currentShards, shard.id]
       ));
     }
-  };
+  }, [scene, encounter, captured]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -620,27 +634,45 @@ function PortfolioQuest({ onClose }) {
         return;
       }
 
-      if (scene || encounter) return;
-      const direction = {
+      const target = event.target;
+      const isEditable = target instanceof HTMLElement && (
+        target.matches('input, textarea, select, [contenteditable="true"]')
+      );
+      if (isEditable || event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const normalizedKey = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      const directionByCode = {
         ArrowUp: [0, -1],
-        w: [0, -1],
         ArrowDown: [0, 1],
-        s: [0, 1],
         ArrowLeft: [-1, 0],
-        a: [-1, 0],
         ArrowRight: [1, 0],
+        KeyW: [0, -1],
+        KeyS: [0, 1],
+        KeyA: [-1, 0],
+        KeyD: [1, 0],
+      }[event.code];
+      const directionByKey = {
+        ArrowUp: [0, -1],
+        ArrowDown: [0, 1],
+        ArrowLeft: [-1, 0],
+        ArrowRight: [1, 0],
+        w: [0, -1],
+        s: [0, 1],
+        a: [-1, 0],
         d: [1, 0],
-      }[event.key];
+      }[normalizedKey];
+      const direction = directionByCode ?? directionByKey;
 
       if (direction) {
         event.preventDefault();
+        if (encounter || (scene && scene !== 'welcome')) return;
         move(...direction);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [scene, encounter, captured, onClose]);
+  }, [scene, encounter, move, onClose]);
 
   const throwCapsule = () => {
     if (!encounter || capsules <= 0 || captureStatus === 'throwing') return;
@@ -670,10 +702,14 @@ function PortfolioQuest({ onClose }) {
 
   return (
     <section
-      className="fixed inset-0 z-[100] overflow-y-auto bg-[#253649] font-sans text-[#292d3e]"
+      ref={gameRef}
+      className="fixed inset-0 z-[100] overflow-y-auto bg-[#253649] font-sans text-[#292d3e] outline-none"
+      data-testid="portfolio-quest"
       role="dialog"
       aria-modal="true"
       aria-label="Bijen's interactive portfolio quest"
+      aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight W A S D"
+      tabIndex={-1}
     >
       <div className="min-h-full bg-[linear-gradient(135deg,rgba(255,255,255,.03)_25%,transparent_25%,transparent_50%,rgba(255,255,255,.03)_50%,rgba(255,255,255,.03)_75%,transparent_75%)] bg-[length:32px_32px] p-3 sm:p-5">
         <div className="mx-auto max-w-[1400px]">
@@ -780,6 +816,9 @@ function PortfolioQuest({ onClose }) {
 
                   <div
                     className="z-20 grid place-items-center transition-all duration-150 ease-out"
+                    data-testid="quest-player"
+                    data-player-x={player.x}
+                    data-player-y={player.y}
                     style={{ gridColumn: player.x + 1, gridRow: player.y + 1 }}
                   >
                     <PlayerSprite />
