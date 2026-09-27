@@ -93,11 +93,137 @@ function ArrowUpRight({ className = "text-[1.1rem]" }) {
   );
 }
 
-function ArrowDown() {
+const skillIcons = {
+  "React Native": (
+    <>
+      <rect x="7" y="2.5" width="10" height="19" rx="2.5" />
+      <path d="M10.5 8 13.5 16M13.5 8 10.5 16" />
+      <path d="M10.6 18.8h2.8" />
+    </>
+  ),
+  Kotlin: (
+    <>
+      <path d="M6.5 4.5h8l-8 8h8" />
+      <path d="M14.5 11.5h5l-5 5h5" />
+    </>
+  ),
+  Expo: (
+    <>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
+      <path d="M12 7.5v9M7.5 12h9" />
+    </>
+  ),
+  Android: (
+    <>
+      <path d="M6.5 10.8a5.5 5.5 0 0 1 11 0" />
+      <rect x="6.5" y="10.8" width="11" height="8" rx="3.5" />
+      <path d="M9.5 6.6 8 4.6M14.5 6.6 16 4.6" />
+      <path d="M9.8 13.8v1.6M14.2 13.8v1.6" />
+    </>
+  ),
+  TypeScript: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="3.5" />
+      <path d="M6.5 10.8h5M9 10.8V17.5" />
+      <path d="M18 12.6a2.5 2.5 0 0 0-3.1 0c-.8.5-.8 1.8 0 2.3l3.1 1.6c.8.5.8 1.8 0 2.3a2.5 2.5 0 0 1-3.1 0" />
+    </>
+  ),
+  JavaScript: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="3.5" />
+      <path d="M16 8.8a3.2 3.2 0 0 0-3.8 0c-1 .7-1 2 0 2.7l3.8 2c1 .7 1 2 0 2.7a3.2 3.2 0 0 1-3.8 0" />
+      <path d="M6.5 8.5h2.5V16" />
+    </>
+  ),
+  Redux: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <ellipse cx="12" cy="12" rx="8.5" ry="3.6" />
+      <circle cx="12" cy="3.5" r="1.3" />
+    </>
+  ),
+  "Redux-Saga": (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <ellipse cx="12" cy="12" rx="8.5" ry="3.6" />
+      <path d="M12 3.5a8.5 8.5 0 0 1 0 17" />
+    </>
+  ),
+  Firebase: (
+    <>
+      <path d="M12 3.2s5 4.4 5 8.6a5 5 0 0 1-10 0c0-1.8.9-3.2 1.9-4.2.2 1.4.9 2.2 1.8 2.5.4-2.4 1.3-4.6 1.3-6.9Z" />
+    </>
+  ),
+  "CI/CD": (
+    <>
+      <path d="M20 11.5a8 8 0 0 0-13.7-4.2" />
+      <path d="M6.3 3.3v4h4" />
+      <path d="M4 12.5a8 8 0 0 0 13.7 4.2" />
+      <path d="M17.7 20.7v-4h-4" />
+    </>
+  ),
+  Jenkins: (
+    <>
+      <circle cx="12" cy="12" r="3.2" />
+      <path d="M12 2.8v2.6M12 18.6v2.6M21.2 12h-2.6M5.4 12H2.8M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8M18.6 18.6l-1.8-1.8M7.2 7.2 5.4 5.4" />
+    </>
+  ),
+  Git: (
+    <>
+      <circle cx="7" cy="6" r="2.5" />
+      <circle cx="7" cy="18" r="2.5" />
+      <circle cx="17" cy="9.5" r="2.5" />
+      <path d="M7 8.5v7" />
+      <path d="M17 12c0 3.2-2.6 3.2-4.4 3.4" />
+    </>
+  ),
+  "Code review": (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="3.5" />
+      <path d="M8 11.6 10.7 14 16 8.6" />
+    </>
+  ),
+  Mentoring: (
+    <>
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3.6 19.4a5.4 5.4 0 0 1 10.8 0" />
+      <path d="M16 5.4a3 3 0 0 1 0 5.8" />
+      <path d="M16.8 14.2a5.4 5.4 0 0 1 3.6 5.2" />
+    </>
+  ),
+  Performance: (
+    <>
+      <path d="M3.8 17.2a8.2 8.2 0 0 1 16.4 0" />
+      <path d="m12 17.2 4.2-4.8" />
+      <circle cx="12" cy="17.2" r="1.3" />
+    </>
+  ),
+  Documentation: (
+    <>
+      <path d="M13.5 3.5H6.5v17h11v-12.5z" />
+      <path d="M13.5 3.5v4h4" />
+      <path d="M9.5 12.5h5M9.5 16h5" />
+    </>
+  ),
+};
+
+function SkillIcon({ name, className = "size-[0.95rem] shrink-0" }) {
+  const icon = skillIcons[name];
+  if (!icon) return null;
+
   return (
-    <span aria-hidden="true" className="text-lg leading-none">
-      ↓
-    </span>
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+    >
+      {icon}
+    </svg>
   );
 }
 
@@ -1456,33 +1582,24 @@ function App() {
                 Mobile engineering,
                 <br />
                 <em className="font-[Georgia,serif] font-medium">
-                  from idea to release.
+                  from concept to stores.
                 </em>
               </h1>
             </Reveal>
             <Reveal className="max-w-[310px] pb-2 md:max-w-none" delay={180}>
-              <p className="mb-6 text-[0.98rem] leading-6 text-[#5d5a55]">
+              <p className="m-0 text-[0.98rem] leading-6 text-[#5d5a55]">
                 I design, build, and ship dependable mobile products across
                 React Native and native Android—combining product judgment with
                 disciplined engineering.
               </p>
-              <a
-                className={`group grid size-12 place-items-center rounded-full border border-[#1d1c1b] transition-all duration-300 hover:translate-y-1 hover:bg-[#1d1c1b] hover:text-[#f2f0ea] ${focusRing}`}
-                href="#work"
-                aria-label="Explore professional experience"
-              >
-                <span className="transition-transform duration-300 group-hover:translate-y-0.5">
-                  <ArrowDown />
-                </span>
-              </a>
             </Reveal>
           </div>
 
           <Reveal
-            className="relative z-10 border-t border-[#bcb9b1] pt-5 font-mono text-[0.62rem] tracking-[0.08em] uppercase sm:text-[0.68rem]"
+            className="relative z-10 pt-5 font-mono text-[0.62rem] tracking-[0.08em] uppercase sm:text-[0.68rem]"
             delay={240}
           >
-            <p className="m-0 leading-[1.5]">React Native · Kotlin</p>
+            <p className="m-0 leading-[1.5]">Kotlin · React Native</p>
           </Reveal>
         </section>
 
@@ -1496,16 +1613,11 @@ function App() {
           <div>
             <Reveal>
               <div className="max-w-[820px] text-[clamp(1.6rem,3vw,2.75rem)] leading-[1.2] tracking-[-0.045em]">
-                <p className="mb-[1.15em]">
+                <p className="m-0">
                   I’m <strong className="font-medium">Bijen Shahi</strong>, a
                   product-minded software engineer with more than four years of
                   experience delivering consumer mobile applications across
                   entertainment and digital media.
-                </p>
-                <p className="m-0 text-[#77736c]">
-                  My work spans native migrations, authentication, interface
-                  refinement, release operations, CI/CD, performance
-                  optimisation, and developer mentorship.
                 </p>
               </div>
             </Reveal>
@@ -1625,9 +1737,10 @@ function App() {
                   <div className="flex flex-wrap content-start gap-2">
                     {group.skills.map((skill) => (
                       <span
-                        className="rounded-full border border-[#aaa69e] px-3 py-2 font-mono text-[0.68rem] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#151518] hover:bg-[#151518] hover:text-[#f2f0ea]"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#aaa69e] px-3 py-2 font-mono text-[0.68rem] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#151518] hover:bg-[#151518] hover:text-[#f2f0ea]"
                         key={skill}
                       >
+                        <SkillIcon name={skill} />
                         {skill}
                       </span>
                     ))}
