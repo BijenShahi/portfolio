@@ -1365,10 +1365,10 @@ function App() {
 
       <header className="sticky top-0 z-50 border-b border-transparent bg-[#f2f0ea]/88 backdrop-blur-xl">
         <nav
-          className={`${shell} flex h-[74px] items-center justify-between text-[0.84rem] font-medium sm:h-[88px]`}
+          className={`${shell} grid h-[74px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 text-[0.84rem] font-medium sm:h-[88px]`}
           aria-label="Primary navigation"
         >
-          <div className="relative">
+          <div className="relative justify-self-start">
             <a
               ref={logoRef}
               className={`-m-3 inline-flex min-h-11 min-w-11 touch-manipulation select-none items-center px-3 font-mono text-[1.4rem] tracking-[-0.12em] ${focusRing}`}
@@ -1388,7 +1388,7 @@ function App() {
               </div>
             )}
           </div>
-          <div className="hidden items-center gap-8 md:flex">
+          <div className="hidden items-center justify-self-center gap-8 md:flex">
             <a
               className={`transition-colors duration-300 hover:text-[#d85d41] ${focusRing}`}
               href="#work"
@@ -1408,7 +1408,7 @@ function App() {
               Contact
             </a>
           </div>
-          <div className="flex items-center gap-5 sm:gap-7">
+          <div className="flex items-center justify-self-end gap-5 sm:gap-7">
             <a
               className={`${navAction} hidden sm:inline-flex`}
               href="/Bijen-Shahi-CV.pdf"
@@ -1445,7 +1445,9 @@ function App() {
           </div>
 
           <Reveal className="relative z-10">
-            <p className={label}>Bijen Shahi · Software Engineer · Kathmandu</p>
+            <p className={label}>
+              Bijen Shahi · Software Engineer · Manchester
+            </p>
           </Reveal>
 
           <div className="relative z-10 grid items-end gap-10 md:grid-cols-[minmax(0,1fr)_270px]">
