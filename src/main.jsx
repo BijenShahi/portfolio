@@ -79,7 +79,7 @@ const focusRing =
   "focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85d41]";
 const gmailComposeUrl =
   "https://mail.google.com/mail/?view=cm&fs=1&to=shahibijen%40gmail.com";
-const navAction = `group inline-flex items-center gap-1.5 font-mono text-[0.68rem] tracking-[0.08em] uppercase text-[#56534d] transition-colors duration-300 hover:text-[#d85d41] ${focusRing}`;
+const navAction = `group items-center gap-1.5 font-mono text-[0.68rem] tracking-[0.08em] uppercase text-[#56534d] transition-colors duration-300 hover:text-[#d85d41] ${focusRing}`;
 const secretTapWindowMs = 30000;
 
 function ArrowUpRight({ className = "text-[1.1rem]" }) {
@@ -1491,10 +1491,10 @@ function App() {
 
       <header className="sticky top-0 z-50 border-b border-transparent bg-[#f2f0ea]/88 backdrop-blur-xl">
         <nav
-          className={`${shell} grid h-[74px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 text-[0.84rem] font-medium sm:h-[88px]`}
+          className={`${shell} flex h-[74px] items-center justify-between gap-4 text-[0.84rem] font-medium sm:h-[88px] md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]`}
           aria-label="Primary navigation"
         >
-          <div className="relative justify-self-start">
+          <div className="relative md:justify-self-start">
             <a
               ref={logoRef}
               className={`-m-3 inline-flex min-h-11 min-w-11 touch-manipulation select-none items-center px-3 font-mono text-[1.4rem] tracking-[-0.12em] ${focusRing}`}
@@ -1534,7 +1534,7 @@ function App() {
               Contact
             </a>
           </div>
-          <div className="flex items-center justify-self-end gap-5 sm:gap-7">
+          <div className="flex items-center gap-5 sm:gap-7 md:justify-self-end">
             <a
               className={`${navAction} hidden sm:inline-flex`}
               href="/Bijen-Shahi-CV.pdf"
@@ -1546,7 +1546,7 @@ function App() {
               </span>
             </a>
             <a
-              className={navAction}
+              className={`${navAction} inline-flex`}
               href={gmailComposeUrl}
               target="_blank"
               rel="noreferrer"
@@ -1562,7 +1562,7 @@ function App() {
 
       <div id="main-content">
         <section
-          className={`${shell} relative flex min-h-[calc(100svh-74px)] flex-col justify-between py-12 pb-8 sm:min-h-[720px] sm:py-20 sm:pb-12`}
+          className={`${shell} relative flex flex-col justify-between py-12 pb-10 sm:min-h-[720px] sm:py-20 sm:pb-12`}
           id="top"
         >
           <div className="pointer-events-none absolute top-[12%] right-[-17rem] hidden size-[34rem] animate-spin rounded-full border border-[#d85d41]/20 [animation-duration:28s] lg:block motion-reduce:animate-none">
@@ -1752,7 +1752,7 @@ function App() {
         </section>
 
         <section
-          className={`${shell} grid border-t border-[#bcb9b1] py-8 pb-24 sm:grid-cols-[1fr_2fr] sm:pb-[145px]`}
+          className={`${shell} grid border-t border-[#bcb9b1] py-8 pb-16 sm:grid-cols-[1fr_2fr] sm:pb-[145px]`}
         >
           <Reveal>
             <p className={`${label} mb-12 sm:mb-0`}>04 / Education</p>
